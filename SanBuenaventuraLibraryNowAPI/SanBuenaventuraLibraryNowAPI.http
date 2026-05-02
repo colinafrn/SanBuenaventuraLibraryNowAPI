@@ -1,0 +1,6 @@
+@SanBuenaventuraLibraryNowAPI_HostAddress = http://localhost:5126
+
+GET {{SanBuenaventuraLibraryNowAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
