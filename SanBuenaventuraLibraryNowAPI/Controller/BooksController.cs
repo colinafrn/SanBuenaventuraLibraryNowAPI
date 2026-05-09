@@ -1,38 +1,37 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SanBuenaventuraLibraryNowAPI.Controller;
 using SanBuenaventuraLibraryNowAPI.MODELS;
+using System.Collections.Generic;
+using System.Linq;
 
-
-namespace SanBuenaventuraLibraryNowAPI.Controller   
+namespace SanBuenaventuraLibraryNowAPI.Controller
 {
     [Route("api/v1/books")]
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private static List<book> books = new List<book>
+        private static List<Book> books = new List<Book>
         {
-            new book
+            new Book
             {
-                Id = 1,
+                ID = 1,
                 Title = "The Hobbit, or There and Back Again",
                 Author = "J.R.R. Tolkien",
                 Genre = "Fantasy, Adventure, Classic",
                 Available = true,
                 PublishedYear = 1937
-
             },
-            new book
-             {
-                Id = 2,
+            new Book
+            {
+                ID = 2,
                 Title = "The Harry Potter",
                 Author = "J.K. Rowling",
                 Genre = "Fantasy, drama, coming-of-age fiction, mystery, and adventure.",
                 Available = true,
                 PublishedYear = 2007
-
             }
         };
+
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -43,51 +42,66 @@ namespace SanBuenaventuraLibraryNowAPI.Controller
                 message = "Books Retrieved.",
             });
         }
+
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var book = books.FirstOrDefault(x => x.Id == id);
-            if (books == null)
+            // FIX: Search for the single book
+            var book = books.FirstOrDefault(x => x.ID == id);
+
+            // FIX: Check the 'book' variable, not the 'books' list
+            if (book == null)
+            {
                 return NotFound(new
                 {
                     status = "error",
                     data = (object?)null,
                     message = "Book not found"
                 });
+            }
+
             return Ok(new
             {
                 status = "success",
-                data = books,
+                data = book, // FIX: Return only the found book, not the whole list
                 message = "Book retrieved"
             });
         }
+
         [HttpPost]
-        public IActionResult Create([FromBody] book newBook)
+        public IActionResult Create([FromBody] Book newBook)
         {
-            newBook.Id = books.Count + 1;
+            // Simple ID generation (for demo purposes)
+            newBook.ID = books.Count > 0 ? books.Max(b => b.ID) + 1 : 1;
+
             books.Add(newBook);
+
             return CreatedAtAction(nameof(GetById),
-                new { id = newBook.Id },
+                new { id = newBook.ID },
                 new
                 {
                     status = "success",
                     data = newBook,
                     message = "Book created",
-
                 });
         }
+
         [HttpPut("{id}")]
-        public IActionResult Update(int id,
-            [FromBody] book updateBook)
+        public IActionResult Update(int id, [FromBody] Book updateBook)
         {
-            var book = books.FirstOrDefault(x => x.Id == id);
+            var book = books.FirstOrDefault(x => x.ID == id);
+
             if (book == null)
+            {
                 return NotFound(new
                 {
                     status = "error",
                     data = (object?)null,
-                    message = "book not found"
+                    message = "Book not found"
                 });
+            }
+
+            // Update properties
             book.Title = updateBook.Title;
             book.Author = updateBook.Author;
             book.Genre = updateBook.Genre;
@@ -101,17 +115,22 @@ namespace SanBuenaventuraLibraryNowAPI.Controller
                 message = "Book Updated"
             });
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var book = books.FirstOrDefault(x => x.Id == id);
+            var book = books.FirstOrDefault(x => x.ID == id);
+
             if (book == null)
+            {
                 return NotFound(new
                 {
                     status = "error",
                     data = (object?)null,
-                    message = "book not found"
+                    message = "Book not found"
                 });
+            }
+
             books.Remove(book);
 
             return Ok(new
@@ -120,7 +139,6 @@ namespace SanBuenaventuraLibraryNowAPI.Controller
                 data = (object?)null,
                 message = "Book removed."
             });
-           }
-         }
         }
-    
+    }
+}
