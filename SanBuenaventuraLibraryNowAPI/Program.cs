@@ -10,13 +10,10 @@ var app = builder.Build();
 //var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 //app.Url.Add($"http://+:{port}");
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-    
-app.UseHttpsRedirection();
+
 app.UseAuthorization();
 
 // Map controller routes
