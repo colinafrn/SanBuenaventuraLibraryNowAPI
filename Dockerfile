@@ -11,5 +11,5 @@ RUN dotnet publish "SanBuenaventuraLibraryNowAPI/SanBuenaventuraLibraryNowAPI.cs
 
 FROM base AS final
 WORKDIR /app 
-COPY --from=build /app/out
+COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "SanBuenaventuraLibraryNowAPI.dll"]
