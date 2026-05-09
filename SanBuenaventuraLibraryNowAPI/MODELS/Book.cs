@@ -1,6 +1,6 @@
 namespace SanBuenaventuraLibraryNowAPI.Models
 {
-    public class Book
+    public class book
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
